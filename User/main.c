@@ -140,16 +140,25 @@ int main(void){
 				mode = WAIT;
 				break;
 			case WRITE_DATA_EEPROM:
+				/*
 				if(score >= highscore){
 					write_dataI2C(0x00, &score, 1);
 					write_dataI2C(0x01, sequence, score);
 				}
+				*/
 				mode = WAIT;
 				start = TRUE;
 				break;
 			case READ_DATA_EEPROM:
+				/*
 				read_dataI2C(0x00, &highscore, 1);
 				read_dataI2C(0x01, sequenceHS, highscore);
+			*/
+				highscore=4;
+				sequenceHS[0]=0;
+				sequenceHS[1]=1;
+				sequenceHS[2]=2;
+				sequenceHS[3]=3;
 				mode = HIGHSCORE;
 				break;
 			case HIGHSCORE:
