@@ -27,9 +27,9 @@ void pin_Configuration(void)
 	
 	// configuration des pinsel
 	maconfig2.Portnum = PINSEL_PORT_1;
-	maconfig2.Pinnum =PINSEL_PIN_9;
+	maconfig2.Pinnum = PINSEL_PIN_9;
 	maconfig2.Funcnum = PINSEL_FUNC_0;
-	maconfig2.Pinmode =PINSEL_PINMODE_PULLDOWN;
+	maconfig2.Pinmode = PINSEL_PINMODE_PULLDOWN;
 	maconfig2.OpenDrain = PINSEL_PINMODE_NORMAL;
   PINSEL_ConfigPin(&maconfig2);
 	// configuration des pinsel

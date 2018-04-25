@@ -14,7 +14,7 @@ void init_i2c_eeprom(){
 void write_dataI2C(uint32_t addr, uint8_t* dataArray, uint32_t nbBytes){
 	I2C_M_SETUP_Type setup;
 	
-	uint8_t data[256];
+	uint8_t data[MAX_SCORE+1];
 	int i;
 	for(i=0; i<nbBytes; i++){
 		data[i+1]=dataArray[i];

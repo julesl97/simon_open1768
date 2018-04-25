@@ -70,13 +70,11 @@ void attentems(int ms){
 }
 /* Cette fonction va permettre le changement de la valeur du bit value du port P1.9 lorsqu’on match. */
 void TIMER0_IRQHandler(){
-   
-	attente--;
+  
 	compteur_50us++;
-	if (duree>0)
-	{
-		duree--;
-	}
+	timeSinceLastInput++;
+	if (attente>0)attente--;
+	if (duree>0)duree--;
 	if(compteur_50us >= demiperiode50us && duree>0)
 	{
 		compteur_50us = 0;
