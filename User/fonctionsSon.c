@@ -1,3 +1,4 @@
+
 // Fichier contenant les fonctions liees a la configuration du haut parleur.
 
 #include <LPC17xx.H>
@@ -6,7 +7,7 @@
 #include "global.h"
 
 #define TIMER_TIME_STEP 1					// 1 us deStepTimer
-#define TIMER_MATCH_VALUE_1s 50 	//valeur pour avoir 1s
+#define TIMER_MATCH_VALUE_50us 50 	//valeur pour avoir 50us
 
 
 const double TabNote[6]={
@@ -18,10 +19,10 @@ const double TabNote[6]={
 	1.0/493.88*1000000				//SI - periode pour 493.88Hz en µs
 };
 
-int duree = 0;						    	//période de temps durant laquelle la note est jouée
-int demiperiode50us = 0;
-int compteur_50us = 0;
-int attente=0;
+int duree = 0;						// période de temps durant laquelle la note est jouée
+int demiperiode50us = 0;            // prend la demie periode de la note souhaitée en µs / 50
+int compteur_50us = 0;				// compteur qui s'incrémente à chaque passage dans l'interruption pour avoir une base de temps (de 50 µs)
+int attente=0; 						// période d'attente entre deux actions
 
 void T0_Init(void)
 {
@@ -48,7 +49,7 @@ void T0_Init(void)
     Timer_MatchConfig_Structure.StopOnMatch  = FALSE;                       // lors d'un match on arrête le timer       
     Timer_MatchConfig_Structure.ExtMatchOutputType = TIM_EXTMATCH_NOTHING;  // lors d'un match on change la valeur de math0.0  
     // on match lorsque le timer à atteind une période de 1ms !
-    Timer_MatchConfig_Structure.MatchValue = TIMER_MATCH_VALUE_1s;    
+    Timer_MatchConfig_Structure.MatchValue = TIMER_MATCH_VALUE_50us;    
     
  /* On passe les données de la structure de configuration à la fonction TIM_ConfigMatch pour configurer le match. En paramètre, on passe un pointeur sur le Timer0 à configurer et la structure de configuration.    */
 	TIM_ConfigMatch(LPC_TIM0,&Timer_MatchConfig_Structure);  
@@ -58,26 +59,32 @@ void T0_Init(void)
 	TIM_Cmd(LPC_TIM0,ENABLE);                                                                    
 }
 
-void JouerNote (int dureeEnMs, int numero_note)
+/* Cette fonction permet de configurer la durée d'émission et la demi periode de temps. */
+void JouerNote (int dureeEnUs, int numero_note)
 {
-		duree = dureeEnMs*20;
+		duree = dureeEnUs/50;
 		demiperiode50us = (int)(TabNote[numero_note]/50/2-1);
 }
 
+/* Cette fonction calcule le temps d'attente entre l'émission de deux notes. */
 void attentems(int ms){
 	attente=ms*20;
 	while(attente>0);
 }
+
 /* Cette fonction va permettre le changement de la valeur du bit value du port P1.9 lorsqu’on match. */
 void TIMER0_IRQHandler(){
   
 	compteur_50us++;
 	timeSinceLastInput++;
+	// s'il reste du temps d'attente on le décroit
 	if (attente>0)attente--;
+	// si la durée d'émission de la note n'est pas nulle on la décroit
 	if (duree>0)duree--;
+	// si la durée d'émission n'est pas nulle et si on a dépassé la base de temps: on inverse la valeur du port
 	if(compteur_50us >= demiperiode50us && duree>0)
 	{
-		compteur_50us = 0;
+		compteur_50us = 0; // remise a 0 du compteur de la base de temps
 		
 		// si le P1.9 est à 0, on le passe à 1
 		if ((GPIO_ReadValue(1)&(1<<9)) == 0 )

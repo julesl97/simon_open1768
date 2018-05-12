@@ -62,13 +62,14 @@ int main(void)
 		NVIC_EnableIRQ(TIMER1_IRQn);
 		NVIC_EnableIRQ(TIMER0_IRQn);
 		// affichage de l'écran maitre
-						sprintf(chaine,"Jouer ou Highscore ?    ");
-						LCD_write_english_string(32,30,chaine,White,Blue);
+		sprintf(chaine,"Jouer ou Highscore ?    ");
+		LCD_write_english_string(32,30,chaine,White,Blue);
+		// affichage des 4 carrés
 		for(i=0; i<NB_COLORS; i++){
 			dessiner_rect(colorsPos[i][0],colorsPos[i][1],colorsPos[i][2],colorsPos[i][3],2,1,Black,colors[0][i]);
 	  }
 		
-		pin_Configuration();
+		pin_Configuration(); //configuration des entrées/sorties pour le son et l'écran 
 		
 	  touch_init(); // init pinsel tactile et init tactile 
 	  
