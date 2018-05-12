@@ -1,9 +1,10 @@
 //===========================================================//
 // Projet Micro - INFO1 - ENSSAT - S2 2018							 //
 //===========================================================//
-// File                : Programme de départ
+// File                : Projet Fini
 // Hardware Environment: Open1768	
 // Build Environment   : Keil µVision
+// Autors              : Cléis, Emma, Jules
 //===========================================================//
 
 #include "lpc17xx_gpio.h"
@@ -15,10 +16,14 @@
 #include "affichagelcd.h"
 #include "touch\touch_panel.h"
 
+#include <stdio.h>
 
 #include "global.h"
 #include "globaldec.h" // fichier contenant toutes les déclarations de variables globales
-#include <stdio.h>
+#include "fonctionsSon.h"
+#include "fonctionsEcran.h"
+#include "fonctionsMemoire.h"
+#include "pinconf.h"
 
 	
 const int colors[2][4] = {
@@ -110,7 +115,7 @@ int main(void)
 						//si la note est correct et que le score est suffisament petit					
 						if(sequence[avancement]==note && score<MAX_SCORE-1){ 
 							avancement++;
-							if(avancement>score+1) exit(42); //problème 
+							if(avancement>score+1) while(1); //problème 
 							//si le joueur à fini la séquence
 							if(avancement==score+1){
 								score++;
@@ -174,7 +179,7 @@ int main(void)
 				read_dataI2C(0x00, &highscore, 1);
 				//lecture de la sequence du highscore
 				read_dataI2C(0x01, sequenceHS, highscore);
-				if(highscore>MAX_SCORE) exit(41); //problème de mémoire
+				if(highscore>MAX_SCORE) while(1); //problème de mémoire
 			
 				mode = HIGHSCORE;
 				break;
