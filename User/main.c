@@ -61,6 +61,7 @@ int main(void)
 		T0_Init();
 		NVIC_EnableIRQ(TIMER1_IRQn);
 		NVIC_EnableIRQ(TIMER0_IRQn);
+	
 		// affichage de l'écran maitre
 		sprintf(chaine,"Jouer ou Highscore ?    ");
 		LCD_write_english_string(32,30,chaine,White,Blue);
@@ -78,7 +79,7 @@ int main(void)
     while(1){
 		switch(mode){
 			case CLAVIER_JEU:
-				timeSinceLastInput=0;
+				timeWaiting=0;
 				mode = WAIT;
 				if(!etaitAppuye){ //si le joueur viens d'appuyer 
 					int note;
@@ -88,36 +89,45 @@ int main(void)
 						if(note<4){
 							start=FALSE;
 							mode=JOUER_SEQUENCE;
-							//srand(touch_x+touch_y);
-							sequence[0]=touch_x%4; // #random
+							//initialisation
 							score=0;
 							avancement=0;
-							start=FALSE;
+							//choix de la 1ère note "aléatoirement"
+							sequence[0]=touch_x%4;
 						}
 						else{
 							mode = READ_DATA_EEPROM;
 						}
 					}
 					else if(note<4){
+						//éteint la led
 						GPIO_SetValue(0,(1<<3));
-						JouerNote(200, note);
+						//on joue la note et change l'affichage
 						dessiner_rect(colorsPos[note][0],colorsPos[note][1],colorsPos[note][2],colorsPos[note][3],2,1,White,colors[1][note]);
+						JouerNote(200, note);
 						attentems(200);
 						dessiner_rect(colorsPos[note][0],colorsPos[note][1],colorsPos[note][2],colorsPos[note][3],2,1,Black,colors[0][note]);
-						if(sequence[avancement]==note && score<MAX_SCORE-1){ //si la note est correct et que le score est suffisament petit
+						//si la note est correct et que le score est suffisament petit					
+						if(sequence[avancement]==note && score<MAX_SCORE-1){ 
 							avancement++;
 							if(avancement>score+1) exit(42); //problème 
+							//si le joueur à fini la séquence
 							if(avancement==score+1){
 								score++;
-								sequence[score]=touch_x%4;
 								avancement=0;
+								//choix d'une note "aléatoirement"
+								sequence[score]=touch_x%4;
+								//on joue la note pour validé la séquence
 								JouerNote(500, NOTE_AIGUE);
 								attentems(1000);
+								
 								mode = JOUER_SEQUENCE;
 							}
 						}else{
+							//on joue la note pour signalé une erreur
 							JouerNote(500, NOTE_GRAVE);
 							attentems(1500);
+							
 							mode = WRITE_DATA_EEPROM;
 						}
 					}
@@ -125,55 +135,80 @@ int main(void)
 				etaitAppuye=TRUE;
 				break;
 			case JOUER_SEQUENCE:
+				//éteint la led
 				GPIO_SetValue(0,(1<<3));
+				//changement du text à l'écran
 				sprintf(chaine,"Ecouter attentivement...");
 				LCD_write_english_string(32,30,chaine,White,Blue);
+			
 				jouerSequence(score+1, sequence);
-				timeSinceLastInput=0;
+			
 				mode = WAIT;
 				break;
 			case JOUER_SEQUENCEHS:
+				//éteint la led
 				GPIO_SetValue(0,(1<<3));
+			
 				jouerSequence(highscore, sequenceHS);
+			
 				mode = WAIT;
 				break;
 			case WRITE_DATA_EEPROM:
 				if(score >= highscore){
+					//enregistrement du highscore
 					write_dataI2C(0x00, &score, 1);
+					//enregistrement de la sequence du highscore
 					write_dataI2C(0x01, sequence, score);
 				}
-						sprintf(chaine,"Jouer ou Highscore ?    ");
-						LCD_write_english_string(32,30,chaine,White,Blue);
-				mode = WAIT;
+				
+				//changement du text à l'écran
+				sprintf(chaine,"Jouer ou Highscore ?    ");
+				LCD_write_english_string(32,30,chaine,White,Blue);
+				
+				//on revient à l'écran principal
 				start = TRUE;
+				mode = WAIT;
 				break;
 			case READ_DATA_EEPROM:
-				
+				//lecture du highscore
 				read_dataI2C(0x00, &highscore, 1);
+				//lecture de la sequence du highscore
 				read_dataI2C(0x01, sequenceHS, highscore);
 				if(highscore>MAX_SCORE) exit(41); //problème de mémoire
+			
 				mode = HIGHSCORE;
 				break;
 			case HIGHSCORE:
+				
+				//changement du text à l'écran
 				sprintf(chaine,"Highscore : %d          ", highscore);
 				LCD_write_english_string(32,30,chaine,White,Blue);
 				mode = JOUER_SEQUENCEHS;
 				break;
 			case WAIT:
-				if(timeSinceLastInput/20 > 3000 && start==FALSE){
-					GPIO_SetValue(0,(1<<3));	 // eteint la led 
+				if(timeWaiting/20 > 3000 && start==FALSE){
+					// eteint la led
+					GPIO_SetValue(0,(1<<3));
+					//changement du texte à l'écran
 					sprintf(chaine,"3 sec ecoulees          ");
 					LCD_write_english_string(32,30,chaine,Red,Blue);
+					//on joue la note pour signalé une erreur
 					JouerNote(500, NOTE_GRAVE);
 					attentems(1500);
+					
 					mode = WRITE_DATA_EEPROM;
 				}
 				if ((GPIO_ReadValue(0)&(1<<3)) != 0 ){
-					GPIO_ClearValue(0,(1<<3));	
+					//allume la led
+					GPIO_ClearValue(0,(1<<3));
+					//point à partir duquel on compte 3s
+					timeWaiting=0;					
 					if(start){
+						//changement du texte à l'écran
 						sprintf(chaine,"Jouer ou Highscore ?    ");
 						LCD_write_english_string(32,30,chaine,White,Blue);
 					}else{
+						//changement du texte à l'écran
 						sprintf(chaine,"Repeter les/la note(s) !");
 						LCD_write_english_string(32,30,chaine,White,Blue);
 					}						

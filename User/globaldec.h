@@ -9,6 +9,6 @@ uint16_t touch_x, touch_y ;
 e_mode mode;
 int etaitAppuye;
 int start;
-uint32_t timeSinceLastInput; //compte de nombre de 50ms écoulé
+uint32_t timeWaiting; //compte de nombre de 50ms écoulé
 
 

@@ -60,9 +60,9 @@ void T0_Init(void)
 }
 
 /* Cette fonction permet de configurer la durée d'émission et la demi periode de temps. */
-void JouerNote (int dureeEnUs, int numero_note)
+void JouerNote (int dureeEnMs, int numero_note)
 {
-		duree = dureeEnUs/50;
+		duree = dureeEnMs/50;
 		demiperiode50us = (int)(TabNote[numero_note]/50/2-1);
 }
 
@@ -76,7 +76,8 @@ void attentems(int ms){
 void TIMER0_IRQHandler(){
   
 	compteur_50us++;
-	timeSinceLastInput++;
+	//
+	if(mode==WAIT)timeWaiting++;
 	// s'il reste du temps d'attente on le décroit
 	if (attente>0)attente--;
 	// si la durée d'émission de la note n'est pas nulle on la décroit
