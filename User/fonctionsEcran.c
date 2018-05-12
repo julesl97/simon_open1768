@@ -5,7 +5,7 @@
 #define TIMER_TIME_STEP			500			// 500 us de Step Timer precuision de 0.5ms
 #define TIMER_MATCH_VALUE_20ms  40 // valeur pour avoir 20000 us 
 
-int compteur_100ms;
+int compteur_20ms;
 
 int getNumeroNote(){
 	if(touch_x>600 && touch_x<2000){
@@ -48,20 +48,20 @@ void T1_Init(void) //La fonction permet de creer et d'initialiser le TIMER1
 	
 	
 	TIM_Cmd(LPC_TIM1,ENABLE);			//On lance le timer																			
-	compteur_100ms = 0;
+	compteur_20ms = 0;
 	etaitAppuye=FALSE;
 }
 
 void TIMER1_IRQHandler(){
-	compteur_100ms = compteur_100ms + 1;
+	compteur_20ms = compteur_20ms + 1;
 	
-	if (compteur_100ms == 2){
+	if (compteur_20ms == 2){ //
 		if ((GPIO_ReadValue(0)&(1<<19)) == 0 ){
 			mode = CLAVIER_JEU;
 		}else{
 			etaitAppuye=FALSE;
 		}
-		compteur_100ms = 0;
+		compteur_20ms = 0;
 	}
 	TIM_ClearIntPending(LPC_TIM1, TIM_MR0_INT);
 }
