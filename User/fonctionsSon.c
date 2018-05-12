@@ -10,12 +10,12 @@
 
 
 const double TabNote[6]={
-	1.0/329.63*1000000,				//MI - periode pour 440Hz en µs
-	1.0/349.23*1000000,				//FA - periode pour 393.66Hz en µs
-	1.0/392.00*1000000,				//SOL - periode pour 392Hz en µs
-	1.0/440.00*1000000,				//LA - periode pour 349.23Hz en µs
-	1.0/261.63*1000000,				//DO - periode pour 440Hz en µs
-	1.0/493.88*1000000				//SI - periode pour 440Hz en µs
+	1.0/329.63*1000000,				//MI - periode pour 329.63Hz en µs
+	1.0/349.23*1000000,				//FA - periode pour 349.23Hz en µs
+	1.0/392.00*1000000,				//SOL - periode pour 392.0Hz en µs
+	1.0/440.00*1000000,				//LA - periode pour 340.00Hz en µs
+	1.0/261.63*1000000,				//DO - periode pour 261.63Hz en µs
+	1.0/493.88*1000000				//SI - periode pour 493.88Hz en µs
 };
 
 int duree = 0;						    	//période de temps durant laquelle la note est jouée
