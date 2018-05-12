@@ -35,7 +35,7 @@ const int colorsPos[4][4] = {
 void jouerSequence(int nb, uint8_t* s){
 	int i;
 	for(i=0; i<nb; i++){
-		JouerNote(200000, s[i]);
+		JouerNote(200, s[i]);
 		dessiner_rect(colorsPos[s[i]][0],colorsPos[s[i]][1],colorsPos[s[i]][2],colorsPos[s[i]][3],2,1,White,colors[1][s[i]]);
 		attentems(300);
 		dessiner_rect(colorsPos[s[i]][0],colorsPos[s[i]][1],colorsPos[s[i]][2],colorsPos[s[i]][3],2,1,Black,colors[0][s[i]]);
@@ -62,7 +62,7 @@ int main(void)
 		NVIC_EnableIRQ(TIMER1_IRQn);
 		NVIC_EnableIRQ(TIMER0_IRQn);
 		// affichage de l'écran maitre
-						sprintf(chaine,"Jouer ou Highscore ? 3  ");
+						sprintf(chaine,"Jouer ou Highscore ?    ");
 						LCD_write_english_string(32,30,chaine,White,Blue);
 		for(i=0; i<NB_COLORS; i++){
 			dessiner_rect(colorsPos[i][0],colorsPos[i][1],colorsPos[i][2],colorsPos[i][3],2,1,Black,colors[0][i]);
@@ -79,9 +79,10 @@ int main(void)
 			case CLAVIER_JEU:
 				timeSinceLastInput=0;
 				mode = WAIT;
-				touch_read();
-				if(!etaitAppuye){
-					int note=getNumeroNote();
+				if(!etaitAppuye){ //si le joueur viens d'appuyer 
+					int note;
+					touch_read();
+					note=getNumeroNote();
 					if(start){
 						if(note<4){
 							start=FALSE;
@@ -98,7 +99,7 @@ int main(void)
 					}
 					else if(note<4){
 						GPIO_SetValue(0,(1<<3));
-						JouerNote(200000, note);
+						JouerNote(200, note);
 						dessiner_rect(colorsPos[note][0],colorsPos[note][1],colorsPos[note][2],colorsPos[note][3],2,1,White,colors[1][note]);
 						attentems(200);
 						dessiner_rect(colorsPos[note][0],colorsPos[note][1],colorsPos[note][2],colorsPos[note][3],2,1,Black,colors[0][note]);
@@ -109,12 +110,12 @@ int main(void)
 								score++;
 								sequence[score]=touch_x%4;
 								avancement=0;
-								JouerNote(500000, NOTE_AIGUE);
+								JouerNote(500, NOTE_AIGUE);
 								attentems(1000);
 								mode = JOUER_SEQUENCE;
 							}
 						}else{
-							JouerNote(500000, NOTE_GRAVE);
+							JouerNote(500, NOTE_GRAVE);
 							attentems(1500);
 							mode = WRITE_DATA_EEPROM;
 						}
@@ -140,7 +141,7 @@ int main(void)
 					write_dataI2C(0x00, &score, 1);
 					write_dataI2C(0x01, sequence, score);
 				}
-						sprintf(chaine,"Jouer ou Highscore ? 2  ");
+						sprintf(chaine,"Jouer ou Highscore ?    ");
 						LCD_write_english_string(32,30,chaine,White,Blue);
 				mode = WAIT;
 				start = TRUE;
@@ -162,7 +163,7 @@ int main(void)
 					GPIO_SetValue(0,(1<<3));	 // eteint la led 
 					sprintf(chaine,"3 sec ecoulees          ");
 					LCD_write_english_string(32,30,chaine,Red,Blue);
-					JouerNote(500000, NOTE_GRAVE);
+					JouerNote(500, NOTE_GRAVE);
 					attentems(1500);
 					mode = WRITE_DATA_EEPROM;
 				}

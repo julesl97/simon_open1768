@@ -60,7 +60,7 @@ void T0_Init(void)
 
 void JouerNote (int dureeEnMs, int numero_note)
 {
-		duree = dureeEnUs*20;
+		duree = dureeEnMs*20;
 		demiperiode50us = (int)(TabNote[numero_note]/50/2-1);
 }
 

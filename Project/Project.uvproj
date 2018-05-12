@@ -117,7 +117,7 @@
             <Oh166RecLen>16</Oh166RecLen>
           </OPTHX>
           <Simulator>
-            <UseSimulator>1</UseSimulator>
+            <UseSimulator>0</UseSimulator>
             <LoadApplicationAtStartup>1</LoadApplicationAtStartup>
             <RunToMain>1</RunToMain>
             <RestoreBreakpoints>1</RestoreBreakpoints>
@@ -128,7 +128,7 @@
             <LimitSpeedToRealTime>0</LimitSpeedToRealTime>
           </Simulator>
           <Target>
-            <UseTarget>0</UseTarget>
+            <UseTarget>1</UseTarget>
             <LoadApplicationAtStartup>1</LoadApplicationAtStartup>
             <RunToMain>1</RunToMain>
             <RestoreBreakpoints>1</RestoreBreakpoints>
@@ -139,7 +139,7 @@
             <RestoreTracepoints>0</RestoreTracepoints>
           </Target>
           <RunDebugAfterBuild>0</RunDebugAfterBuild>
-          <TargetSelection>5</TargetSelection>
+          <TargetSelection>7</TargetSelection>
           <SimDlls>
             <CpuDll></CpuDll>
             <CpuDllArguments></CpuDllArguments>
@@ -491,6 +491,26 @@
               <FileName>touch_panel.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\User\touch\touch_panel.c</FilePath>
+            </File>
+            <File>
+              <FileName>fonctionsEcran.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\User\fonctionsEcran.c</FilePath>
+            </File>
+            <File>
+              <FileName>fonctionsMemoire.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\User\fonctionsMemoire.c</FilePath>
+            </File>
+            <File>
+              <FileName>fonctionsSon.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\User\fonctionsSon.c</FilePath>
+            </File>
+            <File>
+              <FileName>pinconf.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\User\pinconf.c</FilePath>
             </File>
           </Files>
         </Group>
